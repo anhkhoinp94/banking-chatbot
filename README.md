@@ -19,3 +19,9 @@ ollama pull qwen2.5:3b
 ollama pull nomic-embed-text
 
 docker run -d --name chroma -p 8001:8000 -v chroma_data:/data chromadb/chroma
+
+# How to run?
+## docker-compose up -d
+# BE: http://127.0.0.1:8000/docs (swagger)
+Load \data\bank.txt to api: 'http://localhost:8000/embeddings/load' to import documents
+# FE: http://localhost:8501/
