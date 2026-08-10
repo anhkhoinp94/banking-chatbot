@@ -1,9 +1,13 @@
+import os
 import requests
 
-URL = "http://127.0.0.1:8000/chat"
+URL = os.environ.get("BACKEND_URL", "http://localhost:8000/chat")
 
 
 def send_message(message):
-    response = requests.post(URL, json={"message": message})
-
-    return response.json()["answer"]
+    try:
+        response = requests.post(URL, json={"message": message})
+        return response.json()["answer"]
+    except requests.RequestException as e:
+        print(f"Error sending message: {e}")
+        return "Sorry, I encountered an error while processing your request."
