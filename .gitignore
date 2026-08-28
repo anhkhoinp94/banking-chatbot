@@ -3,3 +3,6 @@ venv/
 __pycache__/
 logs/
 *.pyc
+
+# Office lock files (created while a .docx/.xlsx is open) — never useful to commit
+~$*
