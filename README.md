@@ -28,37 +28,35 @@ docker run -d --name chroma -p 8001:8000 -v chroma_data:/data chromadb/chroma
 Load `\artifacts\documents\bank.txt` to api: 'http://localhost:8000/embeddings/load' to import documents
 # FE: http://localhost:8501/
 
-## Baseline CSV
+## Two pipelines in this repo — which one to use
 
-The baseline runner is in `scripts/baseline.py`. The input CSV must contain one
-prompt column named `prompt`, `message`, `question`, or `input`; an optional
-`label` column is preserved in the result. The runner requires 110-170 selected
-rows, calls `POST /chat` once per row, and writes every success or error to CSV.
+This repo has **two separate scripts/artifacts sets** that serve different Track A/B purposes. They are not duplicates of each other; use whichever matches what you're trying to do:
 
-Run the baseline with all defenses off:
+- **`scripts/` + `artifacts/`** (this README, below) — Track A's classifier training/evaluation (`train_classifier.py`, `evaluate_classifier.py`) and a one-off API/RAG smoke-check (`check_api_rag.py`). `artifacts/input/test_cases.csv` is a small balanced benign/injection set used only to train and evaluate the Layer 3 classifier.
+- **`testing/`** — Track B's full attack-testing pipeline: the categorized 107-prompt attack test set, the baseline/L1+L2/full-defense re-test runners, the indirect-injection test, the dual-LLM-judge + human-review labeling workflow, and ASR comparison across phases. **See `testing/README.md` for the full pipeline docs — start there for anything ASR/attack-related.**
 
-```powershell
-python scripts/baseline.py --input artifacts/input/test_cases.csv --defense off --output output/baseline.csv
-```
+`scripts/baseline.py` (this README used to document it below) is now superseded by `testing/scripts/run_phase_test.py`, which supports the same off/on/custom `--defense` flag plus per-prompt `category` and writes output in the schema the rest of the `testing/` pipeline expects. Prefer `testing/scripts/run_phase_test.py` for any new baseline/re-test run.
 
-The API also accepts `defense_config` in the JSON request. For example:
-
-```json
-{"message": "Hạn mức chuyển khoản là bao nhiêu?", "defense_config": {"layer1": true, "layer2": false, "layer3": false}}
-```
-
-The baseline runner accepts `--defense off`, `--defense on`, or an explicit
-configuration such as `--defense layer1=true,layer2=true,layer3=false`.
-The selected configuration is sent with every request and included in the
-backend JSON log at `logs/chat_logs.json`.
-
-## Week 2 defenses
+## Defense layers (Track A, Week 2)
 
 The API applies enabled layers in this order: keyword filtering (Layer 2),
 TF-IDF + Logistic Regression classifier (Layer 3), prompt sandwiching (Layer
 1), and output validation. A blocked request returns a safe fallback and is
 logged with `blocked_at_layer`. If `classifier.pkl` is not present, Layer 3
-uses the built-in detector until a trained model is supplied.
+uses the built-in regex-heuristic detector until a trained model is supplied.
+
+Which layers run is controlled per-request via `defense_config` in the JSON body:
+
+```json
+{"message": "Hạn mức chuyển khoản là bao nhiêu?", "defense_config": {"layer1": true, "layer2": false, "layer3": false}}
+```
+
+The selected configuration is sent with every request and included in the
+backend JSON log at `logs/chat_logs.json`. `testing/scripts/run_phase_test.py`
+accepts `--defense off`, `--defense on`, or an explicit combination such as
+`--defense layer1=true,layer2=true,layer3=false` and sets this field for you.
+
+### Classifier training (Layer 3)
 
 Train and evaluate the classifier from the labeled test set:
 
