@@ -30,14 +30,14 @@ Load `\artifacts\documents\bank.txt` to api: 'http://localhost:8000/embeddings/l
 
 ## Two pipelines in this repo — which one to use
 
-This repo has **two separate scripts/artifacts sets** that serve different Track A/B purposes. They are not duplicates of each other; use whichever matches what you're trying to do:
+This repo has **two separate scripts/artifacts sets** that serve different purposes. They are not duplicates of each other; use whichever matches what you're trying to do:
 
-- **`scripts/` + `artifacts/`** (this README, below) — Track A's classifier training/evaluation (`train_classifier.py`, `evaluate_classifier.py`) and a one-off API/RAG smoke-check (`check_api_rag.py`). `artifacts/input/test_cases.csv` is a small balanced benign/injection set used only to train and evaluate the Layer 3 classifier.
-- **`testing/`** — Track B's full attack-testing pipeline: the categorized 107-prompt attack test set, the baseline/L1+L2/full-defense re-test runners, the indirect-injection test, the dual-LLM-judge + human-review labeling workflow, and ASR comparison across phases. **See `testing/README.md` for the full pipeline docs — start there for anything ASR/attack-related.**
+- **`scripts/` + `artifacts/`** (this README, below) — classifier training/evaluation (`train_classifier.py`, `evaluate_classifier.py`) and a one-off API/RAG smoke-check (`check_api_rag.py`). `artifacts/input/test_cases.csv` is a small balanced benign/injection set used only to train and evaluate the Layer 3 classifier.
+- **`testing/`** — the full attack-testing pipeline: the categorized 107-prompt attack test set, the baseline/L1+L2/full-defense re-test runners, the indirect-injection test, the dual-LLM-judge + human-review labeling workflow, and ASR comparison across phases. **See `testing/README.md` for the full pipeline docs — start there for anything ASR/attack-related.**
 
 `scripts/baseline.py` (this README used to document it below) is now superseded by `testing/scripts/run_phase_test.py`, which supports the same off/on/custom `--defense` flag plus per-prompt `category` and writes output in the schema the rest of the `testing/` pipeline expects. Prefer `testing/scripts/run_phase_test.py` for any new baseline/re-test run.
 
-## Defense layers (Track A, Week 2)
+## Defense layers
 
 The API applies enabled layers in this order: keyword filtering (Layer 2),
 TF-IDF + Logistic Regression classifier (Layer 3), prompt sandwiching (Layer

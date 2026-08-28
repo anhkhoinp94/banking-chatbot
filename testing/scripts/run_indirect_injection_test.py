@@ -1,4 +1,4 @@
-"""B2.3 - Test Indirect Injection: upload each poisoned document in isolation,
+"""Test Indirect Injection: upload each poisoned document in isolation,
 ask the 3 shared test questions under two defense configs (off / full), record
 responses, then restore the original bank.txt so the app is left in its normal
 demo state.

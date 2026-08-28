@@ -3,7 +3,8 @@
 Used as: (a) a second independent judge cross-checking the Groq pre-labels on
 the baseline phase, and (b) the primary automated judge for phases where no
 Groq key is available (L1L2, full_defense). It is NOT a substitute for the
-human cross-review the plan requires (B2.1) -- see testing/MANUAL_GUIDE_TRACK_B.md.
+human cross-review the results still need; see testing/README.md for the
+full review workflow.
 
 Writes/updates a CSV with:
   - local_judge_label / local_judge_reason   (this judge's verdict)

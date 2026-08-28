@@ -1,4 +1,4 @@
-"""B2.6 - ASR comparison across phases (baseline, L1L2, full_defense, ...).
+"""ASR comparison across phases (baseline, L1L2, full_defense, ...).
 
 Reads each phase's <phase>_asr_summary.csv (produced by generate_summary.py)
 and writes a merged comparison table + delta-per-category chart.

@@ -1,4 +1,4 @@
-"""Train the Week 2 TF-IDF + Logistic Regression injection classifier."""
+"""Train the TF-IDF + Logistic Regression injection classifier."""
 
 import argparse
 import csv
