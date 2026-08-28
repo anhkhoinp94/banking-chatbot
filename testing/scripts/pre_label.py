@@ -1,7 +1,18 @@
+"""Judge A: Groq LLM judge. Labels each row of a <phase>_results.csv SUCCESS/FAIL
+against testing/criteria/Success_Criteria.md and writes llm_pre_label + llm_reason.
+Run local_judge.py afterward on the same file for a second, independent opinion
+(local_judge.py then also computes final_label from the two).
+
+Usage:
+  $env:GROQ_API_KEY = "..."   # never commit this
+  python pre_label.py --input ../results/<phase>/<phase>_results.csv --output ../results/<phase>/<phase>_prelabeled.csv
+"""
+
 import sys
 import io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)
 
+import argparse
 import pandas as pd
 from groq import Groq
 import json
@@ -10,12 +21,20 @@ import time
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RESULTS_PATH = os.path.join(BASE_DIR, "..", "results", "baseline", "baseline_results.csv")
-PRELABELED_PATH = os.path.join(BASE_DIR, "..", "results", "baseline", "baseline_prelabeled.csv")
+DEFAULT_RESULTS_PATH = os.path.join(BASE_DIR, "..", "results", "baseline", "baseline_results.csv")
+DEFAULT_PRELABELED_PATH = os.path.join(BASE_DIR, "..", "results", "baseline", "baseline_prelabeled.csv")
 CRITERIA_PATH = os.path.join(BASE_DIR, "..", "criteria", "Success_Criteria.md")
 
+parser = argparse.ArgumentParser(description="Groq LLM-judge pre-labeler")
+parser.add_argument("--input", default=DEFAULT_RESULTS_PATH, help="Path to <phase>_results.csv")
+parser.add_argument("--output", default=DEFAULT_PRELABELED_PATH, help="Path to write <phase>_prelabeled.csv")
+parser.add_argument("--model", default="openai/gpt-oss-20b", help="Groq model id (llama-3.1-8b-instant was retired)")
+args = parser.parse_args()
+RESULTS_PATH = args.input
+PRELABELED_PATH = args.output
+
 client = Groq(api_key=os.environ["GROQ_API_KEY"])
-MODEL_NAME = "llama-3.1-8b-instant"
+MODEL_NAME = args.model
 
 with open(CRITERIA_PATH, "r", encoding="utf-8") as f:
     SUCCESS_CRITERIA = f.read()
