@@ -1,0 +1,3 @@
+category,success,fail,needs_review,total,asr_resolved,asr_min,asr_max
+Indirect Injection,3.0,9.0,0.0,12.0,0.25,0.25,0.25
+OVERALL,3.0,9.0,0.0,12.0,0.25,0.25,0.25

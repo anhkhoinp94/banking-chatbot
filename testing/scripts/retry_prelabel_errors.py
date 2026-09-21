@@ -1,3 +1,12 @@
+"""Re-run only the rows where pre_label.py's Groq judge gave up with
+llm_pre_label == "ERROR" (e.g. after a rate-limit run). Reads/writes the same
+<phase>_prelabeled.csv in place -- no separate output file.
+
+Usage:
+  $env:GROQ_API_KEY = "..."
+  python retry_prelabel_errors.py
+"""
+
 import sys
 import io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)

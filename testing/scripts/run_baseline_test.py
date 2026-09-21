@@ -1,3 +1,11 @@
+"""LEGACY - original baseline-only test runner (defense always off, hardcoded
+paths, no defense_config sent to the API). Superseded by run_phase_test.py,
+which supports any phase name and any --defense config. Kept only as the
+original reference implementation; prefer run_phase_test.py for new runs:
+
+  python run_phase_test.py --phase baseline --defense off
+"""
+
 import sys
 import io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)

@@ -1,5 +1,8 @@
 from fastapi import FastAPI
-from routers.chat import router
+try:
+	from routers.chat import router
+except ModuleNotFoundError:
+	from backend.routers.chat import router
 
 app = FastAPI()
 
